@@ -35,7 +35,10 @@ int Train::getLength() {
   bool allOff = true;
   Car* tmp = first;
   do {
-    if (tmp->light) { allOff = false; break; }
+    if (tmp->light) {
+      allOff = false;
+      break;
+    }
     tmp = tmp->next;
   } while (tmp != first);
 
