@@ -31,7 +31,9 @@ void Train::addCar(bool light) {
 int Train::getLength() {
   if (!first) return 0;
   countOp = 0;
+
   if (!first->light) {
+    // все лампы выключены
     first->light = true;
     Car* cur = first;
     int len = 0;
@@ -50,6 +52,7 @@ int Train::getLength() {
       if (cur->light) cur->light = false;
     }
   } else {
+    // есть включённые лампы
     int k = 1;
     int firstEncounters = 0;
     while (true) {
