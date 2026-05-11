@@ -3,6 +3,17 @@
 
 Train::Train() : countOp(0), first(nullptr) {}
 
+Train::~Train() {
+  if (!first) return;
+  Car* cur = first->next;
+  while (cur != first) {
+    Car* tmp = cur;
+    cur = cur->next;
+    delete tmp;
+  }
+  delete first;
+}
+
 void Train::addCar(bool light) {
   Car* car = new Car{light, nullptr, nullptr};
   if (!first) {
@@ -20,20 +31,45 @@ void Train::addCar(bool light) {
 int Train::getLength() {
   if (!first) return 0;
   countOp = 0;
-  first->light = true;
-  int len = 1;
-  Car* cur = first;
-  while (true) {
-    cur = cur->next;
-    ++countOp;
-    if (cur == first) {
-      return len;
+  if (!first->light) {
+    first->light = true;
+    Car* cur = first;
+    int len = 0;
+    int laps = 0;
+    while (true) {
+      cur = cur->next;
+      ++countOp;
+      if (laps == 0) ++len;
+      if (cur == first) {
+        ++laps;
+        if (laps == 2) {
+          first->light = false;
+          return len;
+        }
+      }
+      if (cur->light) cur->light = false;
     }
-    if (cur->light) {
-      cur->light = false;
-      len = 1;
-    } else {
-      ++len;
+  } else {
+    int k = 1;
+    int firstEncounters = 0;
+    while (true) {
+      Car* cur = first;
+      for (int i = 0; i < k; ++i) {
+        cur = cur->next;
+        ++countOp;
+      }
+      if (cur == first) ++firstEncounters;
+      if (cur->light) {
+        if (cur != first || firstEncounters == 2) {
+          cur->light = false;
+        }
+      }
+      for (int i = 0; i < k; ++i) {
+        cur = cur->prev;
+        ++countOp;
+      }
+      if (!first->light) return k;
+      ++k;
     }
   }
 }
