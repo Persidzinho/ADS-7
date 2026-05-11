@@ -26,14 +26,14 @@ int Train::getLength() {
   while (true) {
     cur = cur->next;
     ++countOp;
+    if (cur == first) {
+      return len;
+    }
     if (cur->light) {
       cur->light = false;
       len = 1;
     } else {
       ++len;
-    }
-    if (cur == first && !first->light) {
-      return len - 1;
     }
   }
 }
