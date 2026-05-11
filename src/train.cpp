@@ -32,8 +32,14 @@ int Train::getLength() {
   if (!first) return 0;
   countOp = 0;
 
-  if (!first->light) {
-    // все лампы выключены
+  bool allOff = true;
+  Car* tmp = first;
+  do {
+    if (tmp->light) { allOff = false; break; }
+    tmp = tmp->next;
+  } while (tmp != first);
+
+  if (allOff) {
     first->light = true;
     Car* cur = first;
     int len = 0;
@@ -52,20 +58,16 @@ int Train::getLength() {
       if (cur->light) cur->light = false;
     }
   } else {
-    // есть включённые лампы
+    first->light = true;
     int k = 1;
-    int firstEncounters = 0;
     while (true) {
       Car* cur = first;
       for (int i = 0; i < k; ++i) {
         cur = cur->next;
         ++countOp;
       }
-      if (cur == first) ++firstEncounters;
-      if (cur->light) {
-        if (cur != first || firstEncounters == 2) {
-          cur->light = false;
-        }
+      if (cur->light && cur != first) {
+        cur->light = false;
       }
       for (int i = 0; i < k; ++i) {
         cur = cur->prev;
